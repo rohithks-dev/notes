@@ -30,23 +30,26 @@ publishing {
 			from components.java
 		}
 	}
-	repositories {
-		maven {
-			def repoUrl = System.getenv("CODEARTIFACT_URL")
-			def token = System.getenv("AWS_CODEARTIFACT_AUTH_TOKEN")
+}
 
-			if (repoUrl && token) {
-				maven {
-					url = uri(repoUrl)
-					credentials {
-						username = "aws"
-						password = token ?: ""
-					}
-				}
+// ✅ Dynamically add repository after the publishing block
+def repoUrl = System.getenv("CODEARTIFACT_URL")
+def token = System.getenv("AWS_CODEARTIFACT_AUTH_TOKEN")
+
+if (repoUrl && token) {
+	publishing.repositories {
+		maven {
+			url = uri(repoUrl)
+			credentials {
+				username = "aws"
+				password = token
 			}
 		}
 	}
+} else {
+	println "❌ CODEARTIFACT_URL or AWS_CODEARTIFACT_AUTH_TOKEN is not set. Skipping remote publish repository config."
 }
+
 
 tasks.named('test') {
 	useJUnitPlatform()
