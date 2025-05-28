@@ -1,2 +1,2 @@
-# notes
+# Notes App
 Notes App

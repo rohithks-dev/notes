@@ -23,6 +23,26 @@ dependencies {
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
+publishing {
+	publications {
+		mavenJava(MavenPublication) {
+			from components.java
+		}
+	}
+	repositories {
+		maven {
+			def repoUrl = System.getenv("CODEARTIFACT_URL")
+			def token = System.getenv("AWS_CODEARTIFACT_AUTH_TOKEN")
+
+			url = uri(repoUrl ?: "")
+			credentials {
+				username = "aws"
+				password = token ?: ""
+			}
+		}
+	}
+}
+
 tasks.named('test') {
 	useJUnitPlatform()
 }
