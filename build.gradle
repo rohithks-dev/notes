@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.5.0'
 	id 'io.spring.dependency-management' version '1.1.7'
+	id 'maven-publish'
 }
 
 group = 'com.apps'
@@ -34,10 +35,14 @@ publishing {
 			def repoUrl = System.getenv("CODEARTIFACT_URL")
 			def token = System.getenv("AWS_CODEARTIFACT_AUTH_TOKEN")
 
-			url = uri(repoUrl ?: "")
-			credentials {
-				username = "aws"
-				password = token ?: ""
+			if (repoUrl && token) {
+				maven {
+					url = uri(repoUrl)
+					credentials {
+						username = "aws"
+						password = token ?: ""
+					}
+				}
 			}
 		}
 	}
